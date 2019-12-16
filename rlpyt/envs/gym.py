@@ -131,3 +131,10 @@ def make(*args, info_example=None, **kwargs):
     else:
         return GymEnvWrapper(EnvInfoWrapper(
             gym.make(*args, **kwargs), info_example))
+
+def gymlike_make(*args, info_example=None, make_fn=gym.make, **kwargs):
+    if info_example is None:
+        return GymEnvWrapper(make_fn(*args, **kwargs))
+    else:
+        return GymEnvWrapper(EnvInfoWrapper(
+            gym.make(*args, **kwargs), info_example))

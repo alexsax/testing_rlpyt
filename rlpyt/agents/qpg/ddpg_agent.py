@@ -42,6 +42,8 @@ class DdpgAgent(BaseAgent):
             global_B=1, env_ranks=None):
         super().initialize(env_spaces, share_memory,
             global_B=global_B, env_ranks=env_ranks)
+        print('Initializing agent models with env parameters', self.env_model_kwargs)
+
         self.q_model = self.QModelCls(**self.env_model_kwargs,
             **self.q_model_kwargs)
         if self.initial_q_model_state_dict is not None:

@@ -16,6 +16,7 @@ class MuMlpModel(torch.nn.Module):
             output_max=1,
             ):
         super().__init__()
+        observation_shape = observation_shape.observation
         self._output_max = output_max
         self._obs_ndim = len(observation_shape)
         self.mlp = MlpModel(
@@ -25,6 +26,7 @@ class MuMlpModel(torch.nn.Module):
         )
 
     def forward(self, observation, prev_action, prev_reward):
+        observation = observation.observation
         lead_dim, T, B, _ = infer_leading_dims(observation, self._obs_ndim)
         mu = self._output_max * torch.tanh(self.mlp(observation.view(T * B, -1)))
         mu = restore_leading_dims(mu, lead_dim, T, B)
@@ -40,6 +42,7 @@ class PiMlpModel(torch.nn.Module):
             action_size,
             ):
         super().__init__()
+        observation_shape = observation_shape.observation
         self._obs_ndim = len(observation_shape)
         self._action_size = action_size
         self.mlp = MlpModel(
@@ -49,6 +52,7 @@ class PiMlpModel(torch.nn.Module):
         )
 
     def forward(self, observation, prev_action, prev_reward):
+        observation_shape = observation_shape.observation
         lead_dim, T, B, _ = infer_leading_dims(observation,
             self._obs_ndim)
         output = self.mlp(observation.view(T * B, -1))
@@ -66,6 +70,7 @@ class QofMuMlpModel(torch.nn.Module):
             action_size,
             ):
         super().__init__()
+        observation_shape = observation_shape.observation
         self._obs_ndim = len(observation_shape)
         self.mlp = MlpModel(
             input_size=int(np.prod(observation_shape)) + action_size,
@@ -74,6 +79,7 @@ class QofMuMlpModel(torch.nn.Module):
         )
 
     def forward(self, observation, prev_action, prev_reward, action):
+        observation = observation.observation
         lead_dim, T, B, _ = infer_leading_dims(observation,
             self._obs_ndim)
         q_input = torch.cat(

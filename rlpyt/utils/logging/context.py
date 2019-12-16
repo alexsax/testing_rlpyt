@@ -22,14 +22,16 @@ def logger_context(log_dir, run_ID, name, log_params=None, snapshot_mode="none")
     logger.set_log_tabular_only(False)
     log_dir = osp.join(log_dir, f"run_{run_ID}")
     exp_dir = osp.abspath(log_dir)
-    if LOG_DIR != osp.commonpath([exp_dir, LOG_DIR]):
-        print(f"logger_context received log_dir outside of {LOG_DIR}: "
-            f"prepending by {LOG_DIR}/local/<yyyymmdd>/")
-        exp_dir = get_log_dir(log_dir)
+    print('context:', exp_dir)
+    #if LOG_DIR != osp.commonpath([exp_dir, LOG_DIR]):
+    #    print(f"logger_context received log_dir outside of {LOG_DIR}: "
+    #        f"prepending by {LOG_DIR}/local/<yyyymmdd>/")
+    #    exp_dir = get_log_dir(log_dir)
     tabular_log_file = osp.join(exp_dir, "progress.csv")
     text_log_file = osp.join(exp_dir, "debug.log")
     params_log_file = osp.join(exp_dir, "params.json")
 
+    logger.set_vis_dir(exp_dir)
     logger.set_snapshot_dir(exp_dir)
     logger.add_text_output(text_log_file)
     logger.add_tabular_output(tabular_log_file)
